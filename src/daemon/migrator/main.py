@@ -48,12 +48,13 @@ if __name__ == "__main__":
 
         print("Checking updates...")
         # !TODO: 1- Execute a SELECT query to check for any changes on the table
+        cursor = db_org.cursor()
+        cursor.execute("SELECT * FROM converted_documents;")
+        converted_files = cursor.fetchall()
+        cursor.close()
         # !TODO: 2- Execute a SELECT queries with xpath to retrieve the data we want to store in the relational db
         # !TODO: 3- Execute INSERT queries in the destination db
         # !TODO: 4- Make sure we store somehow in the origin database that certain records were already migrated.
         #          Change the db structure if needed.
-
-        db_org.close()
-        db_dst.close()
 
         time.sleep(POLLING_FREQ)

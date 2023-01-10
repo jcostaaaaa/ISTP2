@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 
 
-class Country:
+class Competition:
 
     def __init__(self, name):
         Country.counter += 1

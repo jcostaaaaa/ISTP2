@@ -2,40 +2,51 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS POSTGIS;
 CREATE EXTENSION IF NOT EXISTS POSTGIS_TOPOLOGY;
 
-CREATE TABLE public.teams (
-	id              uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-	name            VARCHAR(250) NOT NULL,
-	created_on      TIMESTAMP NOT NULL DEFAULT NOW(),
-	updated_on      TIMESTAMP NOT NULL DEFAULT NOW()
+
+
+
+create table competition
+(
+    id_comp uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name    varchar
 );
 
-CREATE TABLE public.countries (
-	id              uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-	name            VARCHAR(250) UNIQUE NOT NULL,
-	geom            GEOMETRY,
-	created_on      TIMESTAMP NOT NULL DEFAULT NOW(),
-	updated_on      TIMESTAMP NOT NULL DEFAULT NOW()
+create table game
+(
+    id_game    uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id_home_team uuid
+        constraint game_teams_id_team_fk
+            references teams,
+    id_away_team uuid
+        constraint game_teams_id_team_fk_2
+            references teams,
+    gh           integer,
+    ga           integer,
+    date         date,
+    id_comp      uuid
+        constraint game_competition_id_comp_fk
+            references competition
 );
 
-CREATE TABLE public.players (
-	id              uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-	name            VARCHAR(250) NOT NULL,
-	age             INT NOT NULL,
-	team_id         uuid,
-	country_id      uuid NOT NULL,
-	created_on      TIMESTAMP NOT NULL DEFAULT NOW(),
-	updated_on      TIMESTAMP NOT NULL DEFAULT NOW()
+
+create table teams
+(
+    id_team   uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name_team    varchar,
+    country_team varchar,
+    geo GEOMETRY
 );
 
-ALTER TABLE players
-    ADD CONSTRAINT players_countries_id_fk
-        FOREIGN KEY (country_id) REFERENCES countries
-            ON DELETE CASCADE;
-
-ALTER TABLE players
-    ADD CONSTRAINT players_teams_id_fk
-        FOREIGN KEY (team_id) REFERENCES teams
-            ON DELETE SET NULL;
+alter table teams
+    owner to is;
 
 
+
+alter table game
+    owner to is;
+
+
+
+alter table competition
+    owner to is;
 
