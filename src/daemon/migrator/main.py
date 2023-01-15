@@ -48,13 +48,40 @@ if __name__ == "__main__":
 
         print("Checking updates...")
         # !TODO: 1- Execute a SELECT query to check for any changes on the table
-        cursor = db_org.cursor()
-        cursor.execute("SELECT * FROM converted_documents;")
-        converted_files = cursor.fetchall()
-        cursor.close()
+        cursorCheckDataBase = db_org.cursor()
+        cursorCheckDataBase.execute("select count(*) from imported_documents where is_imported=false")
+        count = cursorCheckDataBase.fetchone()
+
+        if count[0] > 0:
+            print("We have new imported files in the database!!")
+        else:
+            print("We already imported all the files to the database")
+
         # !TODO: 2- Execute a SELECT queries with xpath to retrieve the data we want to store in the relational db
-        # !TODO: 3- Execute INSERT queries in the destination db
-        # !TODO: 4- Make sure we store somehow in the origin database that certain records were already migrated.
-        #          Change the db structure if needed.
+
+        cursorSelectImportedDocuments = db_org.cursor()
+        cursorSelectImportedDocuments.execute("select id from imported_documents where is_imported= false ")
+        idsImportedDocuments = cursorSelectImportedDocuments.fetchall();
+        for id in idsImportedDocuments:
+            cursorOrigem= db_org.cursor()
+            cursorOrigem.execute(
+                "select unnest(xpath('DataSetResults/competitions/competition/@name',xml)):: text as Competition from imported_documents where id= %s",
+                (id,))
+            competitions = cursorOrigem.fetchall()
+            cursorOrigem.close()
+
+            # !TODO: 3- Execute INSERT queries in the destination db
+            cursorDestino = db_dst.cursor()
+            for competition in competitions:
+                cursorDestino.execute("INSERT INTO competition (name) VALUES (%s)", (competition,))
+            cursor2 = db_org.cursor()
+
+            # !TODO: 4- Make sure we store somehow in the origin database that certain records were already migrated.
+            #          Change the db structure if needed.
+            cursor2.execute("UPDATE imported_documents set is_imported=true where id=%s", (id,))
+            db_org.commit()
+            cursorDestino.close()
+        db_dst.commit()
+
 
         time.sleep(POLLING_FREQ)
