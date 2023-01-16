@@ -62,26 +62,103 @@ if __name__ == "__main__":
         cursorSelectImportedDocuments = db_org.cursor()
         cursorSelectImportedDocuments.execute("select id from imported_documents where is_imported= false ")
         idsImportedDocuments = cursorSelectImportedDocuments.fetchall();
-        for id in idsImportedDocuments:
-            cursorOrigem= db_org.cursor()
-            cursorOrigem.execute(
-                "select unnest(xpath('DataSetResults/competitions/competition/@name',xml)):: text as Competition from imported_documents where id= %s",
-                (id,))
-            competitions = cursorOrigem.fetchall()
-            cursorOrigem.close()
+
+        #     # !TODO: 3- Execute INSERT queries in the destination db
+
+        for id1 in idsImportedDocuments:
+            # COMPETITIONS CURSOR
+            cursorOrigemCompetitions = db_org.cursor()
+            cursorOrigemCompetitions.execute(
+
+                "select unnest(xpath('DataSetResults/competitions/competition/@name',xml)):: text as Competition"
+
+                " from imported_documents where id= %s",
+                (id1,))
+            competitions = cursorOrigemCompetitions.fetchall()
+            cursorOrigemCompetitions.close()
+
+            # TEAMS HOME CURSOR
+            cursorOrigemTeamsHome = db_org.cursor()
+            cursorOrigemTeamsHome.execute(
+                "select unnest(xpath('DataSetResults/competitions/competition/teams/team/@Name',xml)):: text as Teams,"
+                "unnest(xpath('DataSetResults/competitions/competition/teams/team/@Code',xml))::text as codeHomeTeam"
+                " from imported_documents where id=%s",
+                (id1,))
+            homeTeams = cursorOrigemTeamsHome.fetchall()
+            cursorOrigemTeamsHome.close()
+
+            # TEAMS AWAY CURSOR
+            cursorOrigemTeamsAway = db_org.cursor()
+            cursorOrigemTeamsAway.execute(
+                "select unnest(xpath('DataSetResults/competitions/competition/teams/team/games/game/AwayTeam/text()',xml)):: text as Teams,"
+                "unnest(xpath('DataSetResults/competitions/competition/teams/team/games/game/AwayCode/text()',"
+                "xml))::text as codeAwayTeam "
+                " from imported_documents where id=%s",
+                (id1,))
+            awayTeams = cursorOrigemTeamsAway.fetchall()
+            cursorOrigemTeamsAway.close()
+
+            # GAMES CURSOR
+            cursorOrigemGames = db_org.cursor()
+            cursorOrigemGames.execute(
+                "select unnest(xpath('DataSetResults/competitions/competition/teams/team/@Name',xml)):: text as teamHome,"
+                "unnest(xpath('DataSetResults/competitions/competition/teams/team/games/game/AwayTeam/text()',xml))::text as awayteam ,"
+                "unnest(xpath('DataSetResults/competitions/competition/@name',xml))::text as competition ,"
+                "unnest(xpath('DataSetResults/competitions/competition/teams/team/games/game/HomeGoals/text()',xml)) :: text as gh,"
+                "unnest(xpath('DataSetResults/competitions/competition/teams/team/games/game/AwayGoals/text()',xml)) :: text as ga,"
+                "unnest(xpath('DataSetResults/competitions/competition/teams/team/games/game/@Date',xml)) :: text as date"
+                " from imported_documents where id=%s",
+                (id1,))
+            games = cursorOrigemGames.fetchall()
+            cursorOrigemGames.close()
 
             # !TODO: 3- Execute INSERT queries in the destination db
             cursorDestino = db_dst.cursor()
+            # COMPETITIONS INSERT
             for competition in competitions:
-                cursorDestino.execute("INSERT INTO competition (name) VALUES (%s)", (competition,))
-            cursor2 = db_org.cursor()
+                cursorDestino.execute("SELECT id_comp FROM competition WHERE name = %s", (competition[0],))
+                if cursorDestino.fetchone():
+                    print("Já existe esta competição")
+                else:
+                    cursorDestino.execute("INSERT INTO competition (name) VALUES (%s)", (competition[0],))
+            # HOMETEAM INSERT
+            for homeTeam in homeTeams:
+                cursorDestino.execute("SELECT id_team FROM teams WHERE name_team = %s", (homeTeam[0],))
+                if cursorDestino.fetchone():
+                    print("Já existe esta equipa")
+                else:
+                    cursorDestino.execute("Insert into teams (name_team,country_team) VALUES (%s,%s)",
+                                          (homeTeam[0], homeTeam[1]))
+            # AWAYTEAM INSERT
+            for awayTeam in awayTeams:
+                cursorDestino.execute("SELECT id_team FROM teams WHERE name_team = %s", (awayTeam[0],))
+                if cursorDestino.fetchone():
+                    print("Já existe esta equipa")
+                else:
+                    cursorDestino.execute("INSERT INTO teams (name_team,country_team) VALUES (%s,%s)",
+                                          (awayTeam[0], awayTeam[1]))
+            # GAME INSERT
+            for game in games:
+                cursorDestino.execute("Select id_team FROM teams WHERE name_team=%s", (game[0],))
+                idHomeTeam = cursorDestino.fetchone()
 
-            # !TODO: 4- Make sure we store somehow in the origin database that certain records were already migrated.
+                cursorDestino.execute("Select id_team From teams where name_team=%s", (game[1],))
+                idAwayTeam = cursorDestino.fetchone()
+
+                cursorDestino.execute("Select id_comp From competition where name=%s", (game[2],))
+                competition = cursorDestino.fetchone()
+
+                cursorDestino.execute(
+                    "Insert into game(id_home_team, id_away_team, gh, ga, date, id_comp) VALUES (%s,%s,%s,%s,"
+                    "%s,%s)",
+                    (idHomeTeam, idAwayTeam, game[3], game[4], game[5], competition))
+
+                # !TODO: 4- Make sure we store somehow in the origin database that certain records were already migrated.
             #          Change the db structure if needed.
-            cursor2.execute("UPDATE imported_documents set is_imported=true where id=%s", (id,))
+            cursor2 = db_org.cursor()
+            cursor2.execute("UPDATE imported_documents set is_imported = true where id=%s", (id1,))
             db_org.commit()
             cursorDestino.close()
         db_dst.commit()
-
 
         time.sleep(POLLING_FREQ)

@@ -11,6 +11,15 @@ create table competition
     name    varchar
 );
 
+create table teams
+(
+    id_team   uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name_team    varchar,
+    country_team varchar
+
+);
+
+
 create table game
 (
     id_game    uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -23,19 +32,13 @@ create table game
     gh           integer,
     ga           integer,
     date         date,
+      geo GEOMETRY,
     id_comp      uuid
         constraint game_competition_id_comp_fk
             references competition
 );
 
 
-create table teams
-(
-    id_team   uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name_team    varchar,
-    country_team varchar,
-    geo GEOMETRY
-);
 
 alter table teams
     owner to is;
