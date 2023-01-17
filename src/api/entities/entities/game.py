@@ -18,7 +18,7 @@ class Game:
     def get_games():
         conexao = connection()
         cursor = conexao.cursor()
-        cursor.execute("SELECT * from game")
+        cursor.execute("SELECT g.id_game,(select t.name_team from teams t where g.id_home_team=t.id_team) as TeamHome,(select t.name_team from teams t where g.id_away_team=t.id_team) as AwayTeam,g.gh,g.ga,g.date,g.geo,(select c.name from competition c where c.id_comp=g.id_comp) as TeamHome from game g")
         result = cursor.fetchall()
         conexao.commit()
         conexao.close()

@@ -1,14 +1,27 @@
 import sys
 import time
 
-POLLING_FREQ = int(sys.argv[1]) if len(sys.argv) >= 2 else 60
-ENTITIES_PER_ITERATION = int(sys.argv[2]) if len(sys.argv) >= 3 else 10
+import psycopg2 as psycopg2
+
+from src.daemon.importer.utils.coordinates import get_data_api
 
 if __name__ == "__main__":
 
-    while True:
-        print(f"Getting up to {ENTITIES_PER_ITERATION} entities without coordinates...")
-        # !TODO: 1- Use api-gis to retrieve a fixed amount of entities without coordinates (e.g. 100 entities per iteration, use ENTITIES_PER_ITERATION)
-        # !TODO: 2- Use the entity information to retrieve coordinates from an external API
-        # !TODO: 3- Submit the changes
-        time.sleep(POLLING_FREQ)
+    connection = psycopg2.connect(user="is", password="is", host="db-rel", database="is")
+
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT g.id_game as id, t.country_team as country FROM teams t, game g where t.id_team = g.id_home_team and g.geo is null ",
+        )
+        result = cursor.fetchall()
+
+    for id, country in result:
+        print(id)
+        coords = get_data_api(country)
+        if coords is not None:
+            with connection.cursor() as cursor:
+                cursor.execute("UPDATE game SET geo = ST_SetSRID(ST_MakePoint(%s, %s),4326) where id_game = %s",
+                               (float(coords[0]), float(coords[1]), id))
+                connection.commit()
+
+    connection.close()

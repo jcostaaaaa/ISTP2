@@ -35,6 +35,8 @@ def get_games():
 
 
 
+
+
 # @app.route('/api/competitions/', methods=['POST'])
 # def create_competition():
 #     data = request.get_json()
