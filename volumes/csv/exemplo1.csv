@@ -1,0 +1,20 @@
+home,away,date,gh,ga,full_time,competition,home_ident,away_ident,home_country,away_country,home_code,away_code,home_continent,away_continent,continent,level
+Adelaide United,Shandong Luneng,2007-03-07,0,1,F,AFC CL,Adelaide United (Australia),Shandong Luneng (China Pr),australia,china-pr,AU,CPR,Oceania,Asia,Asia,international
+Adelaide United,Seongnam FC,2007-04-11,2,2,F,AFC CL,Adelaide United (Australia),Seongnam FC (Korea Republic),australia,korea-republic,AU,KOR,Oceania,Asia,Asia,international
+Adelaide United,Dong Tam Long An,2007-05-23,3,0,F,AFC CL,Adelaide United (Australia),Dong Tam Long An (Vietnam),australia,vietnam,AU,VN,Oceania,Asia,Asia,international
+Adelaide United,Changchun Yatai,2008-03-19,0,0,F,AFC CL,Adelaide United (Australia),Changchun Yatai (China Pr),australia,china-pr,AU,CPR,Oceania,Asia,Asia,international
+Adelaide United,Becamex Binh Duong,2008-04-23,4,1,F,AFC CL,Adelaide United (Australia),Becamex Binh Duong (Vietnam),australia,vietnam,AU,VN,Oceania,Asia,Asia,international
+Adelaide United,Pohang Steelers,2008-05-07,1,0,F,AFC CL,Adelaide United (Australia),Pohang Steelers (Korea Republic),australia,korea-republic,AU,KOR,Oceania,Asia,Asia,international
+Adelaide United,Kashima Antlers,2008-09-24,1,0,F,AFC CL,Adelaide United (Australia),Kashima Antlers (Japan),australia,japan,AU,JP,Oceania,Asia,Asia,international
+Adelaide United,FC Bunyodkor,2008-10-08,3,0,F,AFC CL,Adelaide United (Australia),FC Bunyodkor (Uzbekistan),australia,uzbekistan,AU,UZ,Oceania,Asia,Asia,international
+Adelaide United,Gamba Osaka,2008-11-12,0,2,F,AFC CL,Adelaide United (Australia),Gamba Osaka (Japan),australia,japan,AU,JP,Oceania,Asia,Asia,international
+Adelaide United,Pohang Steelers,2010-02-24,1,0,F,AFC CL,Adelaide United (Australia),Pohang Steelers (Korea Republic),australia,korea-republic,AU,KOR,Oceania,Asia,Asia,international
+Adelaide United,Sanfrecce Hiroshima,2010-03-24,3,2,F,AFC CL,Adelaide United (Australia),Sanfrecce Hiroshima (Japan),australia,japan,AU,JP,Oceania,Asia,Asia,international
+Adelaide United,Shandong Luneng,2010-04-27,0,1,F,AFC CL,Adelaide United (Australia),Shandong Luneng (China Pr),australia,china-pr,AU,CPR,Oceania,Asia,Asia,international
+Adelaide United,Jeonbuk FC,2010-05-12,2,3,E,AFC CL,Adelaide United (Australia),Jeonbuk FC (Korea Republic),australia,korea-republic,AU,KOR,Oceania,Asia,Asia,international
+Adelaide United,Persipura Jayapura,2012-02-16,3,0,F,AFC CL,Adelaide United (Australia),Persipura Jayapura (Indonesia),australia,indonesia,AU,ID,Oceania,Asia,Asia,international
+Adelaide United,Gamba Osaka,2012-03-20,2,0,F,AFC CL,Adelaide United (Australia),Gamba Osaka (Japan),australia,japan,AU,JP,Oceania,Asia,Asia,international
+Adelaide United,Pohang Steelers,2012-04-18,1,0,F,AFC CL,Adelaide United (Australia),Pohang Steelers (Korea Republic),australia,korea-republic,AU,KOR,Oceania,Asia,Asia,international
+Adelaide United,FC Bunyodkor,2012-05-02,0,0,F,AFC CL,Adelaide United (Australia),FC Bunyodkor (Uzbekistan),australia,uzbekistan,AU,UZ,Oceania,Asia,Asia,international
+Racing Club,Liverpool Futbol Club,1956-06-02,2,1,F,uruguay,Racing Club (Uruguay),Liverpool Futbol Club (Uruguay),uruguay,uruguay,UY,UY,South America,South America,South America,national
+Racing Club,Defensor Sporting,1956-06-09,0,2,F,uruguay,Racing Club (Uruguay),Defensor Sporting (Uruguay),uruguay,uruguay,UY,UY,South America,South America,South America,national
