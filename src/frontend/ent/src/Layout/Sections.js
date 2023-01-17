@@ -1,23 +1,24 @@
-import Players from "../Tables/Players";
+
+import Competitions from "../Tables/Competitions";
 
 const Sections = [
 
     {
-        id: "players",
-        label: "Players",
-        content: <Players/>
+        id: "competitions",
+        label: "Competitions",
+        content: <Competitions/>
     },
 
     {
         id: "teams",
         label: "Teams",
-        content: <h1>Teams - Work in progresss</h1>
+        content: <h1>Teams</h1>
     },
 
     {
-        id: "countries",
-        label: "Countries",
-        content: <h1>Countries - Work in progress</h1>
+        id: "games",
+        label: "Games",
+        content: <h1>Games</h1>
     }
 
 ];

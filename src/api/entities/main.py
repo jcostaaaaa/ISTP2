@@ -1,31 +1,47 @@
 import sys
-
 from flask import Flask, jsonify, request
 
-from entities import Team
+from entities.competition import Competition
+from entities.teams import Teams
+from entities.game import Game
+
+
 
 PORT = int(sys.argv[1]) if len(sys.argv) >= 2 else 9000
-
-# set of all teams
-# !TODO: replace by database access
-teams = [
-]
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
 
+# set of all teams
+# !TODO: replace by database access
 
-@app.route('/api/teams/', methods=['GET'])
+
+@app.route('/api/competitions', methods=['GET'])
+def get_competitions():
+    result = Competition.get_competition()
+
+    return jsonify(result), 201
+
+@app.route('/api/teams', methods=['GET'])
 def get_teams():
-    return jsonify([team.__dict__ for team in teams])
+    result = Teams.get_teams()
+
+    return jsonify(result), 201
+
+@app.route('/api/games', methods=['GET'])
+def get_games():
+    result = Game.get_games()
+
+    return jsonify(result), 201
 
 
-@app.route('/api/teams/', methods=['POST'])
-def create_team():
-    data = request.get_json()
-    team = Team(name=data['name'])
-    teams.append(team)
-    return jsonify(team.__dict__), 201
+
+# @app.route('/api/competitions/', methods=['POST'])
+# def create_competition():
+#     data = request.get_json()
+#     competition = Competition(name=data['name'])
+#     #competitions.append(competition)
+#     return jsonify(competition.__dict__), 201
 
 
 if __name__ == '__main__':

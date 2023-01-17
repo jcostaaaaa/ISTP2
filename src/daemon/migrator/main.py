@@ -101,13 +101,36 @@ if __name__ == "__main__":
             # GAMES CURSOR
             cursorOrigemGames = db_org.cursor()
             cursorOrigemGames.execute(
-                "select unnest(xpath('DataSetResults/competitions/competition/teams/team/@Name',xml)):: text as teamHome,"
-                "unnest(xpath('DataSetResults/competitions/competition/teams/team/games/game/AwayTeam/text()',xml))::text as awayteam ,"
-                "unnest(xpath('DataSetResults/competitions/competition/@name',xml))::text as competition ,"
-                "unnest(xpath('DataSetResults/competitions/competition/teams/team/games/game/HomeGoals/text()',xml)) :: text as gh,"
-                "unnest(xpath('DataSetResults/competitions/competition/teams/team/games/game/AwayGoals/text()',xml)) :: text as ga,"
-                "unnest(xpath('DataSetResults/competitions/competition/teams/team/games/game/@Date',xml)) :: text as date"
-                " from imported_documents where id=%s",
+              """ 
+              with competitions as (
+    select
+           unnest(xpath('DataSetResults/competitions/competition',xml)) as competition
+    from imported_documents
+    where id=%s
+
+),teams as (
+   select
+          (xpath('/competition/@name',competition))[1] ::text as competition ,
+          unnest(xpath('/competition/teams/team',competition)) as team
+   from competitions
+
+
+), games as (
+    select
+           competition,
+           (xpath('/team/@Name',team))[1] ::text as homeTeam ,
+            unnest(xpath('/team/games/game',team)) as game
+    from teams
+)
+select
+        competition,
+       homeTeam,
+       (xpath('/game/AwayTeam/text()',game))[1] :: text as awayTeam,
+       (xpath('/game/HomeGoals/text()',game))[1] :: text as homeGoals,
+       (xpath('/game/AwayGoals/text()',game))[1] :: text as awayGoals,
+       (xpath('/game/@Date',game))[1] :: text as Date
+from games
+              """,
                 (id1,))
             games = cursorOrigemGames.fetchall()
             cursorOrigemGames.close()
@@ -139,19 +162,13 @@ if __name__ == "__main__":
                                           (awayTeam[0], awayTeam[1]))
             # GAME INSERT
             for game in games:
-                cursorDestino.execute("Select id_team FROM teams WHERE name_team=%s", (game[0],))
-                idHomeTeam = cursorDestino.fetchone()
-
-                cursorDestino.execute("Select id_team From teams where name_team=%s", (game[1],))
-                idAwayTeam = cursorDestino.fetchone()
-
-                cursorDestino.execute("Select id_comp From competition where name=%s", (game[2],))
-                competition = cursorDestino.fetchone()
 
                 cursorDestino.execute(
-                    "Insert into game(id_home_team, id_away_team, gh, ga, date, id_comp) VALUES (%s,%s,%s,%s,"
-                    "%s,%s)",
-                    (idHomeTeam, idAwayTeam, game[3], game[4], game[5], competition))
+                    "Insert into game(id_home_team, id_away_team, gh, ga, date, id_comp) VALUES ("
+                    "(select id_team from teams where name_team = %s limit 1) "
+                    ",(select id_team from teams where name_team = %s limit 1),%s,%s,"
+                    "%s,(select id_comp from competition where name= %s limit 1))",
+                    (game[1], game[2], game[3], game[4], game[5], game[0]))
 
                 # !TODO: 4- Make sure we store somehow in the origin database that certain records were already migrated.
             #          Change the db structure if needed.
