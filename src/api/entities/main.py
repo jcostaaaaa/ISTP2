@@ -15,24 +15,23 @@ app.config["DEBUG"] = True
 # set of all teams
 # !TODO: replace by database access
 
-
 @app.route('/api/competitions', methods=['GET'])
 def get_competitions():
     result = Competition.get_competition()
+    return jsonify({'competitions': result}), 200
 
-    return jsonify(result), 201
 
 @app.route('/api/teams', methods=['GET'])
 def get_teams():
     result = Teams.get_teams()
 
-    return jsonify(result), 201
+    return jsonify({'teams': result}), 200
 
 @app.route('/api/games', methods=['GET'])
 def get_games():
     result = Game.get_games()
 
-    return jsonify(result), 201
+    return jsonify({'games': result}), 200
 
 
 

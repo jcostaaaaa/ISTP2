@@ -2,6 +2,7 @@ const path = require("path");
 const express = require("express");
 const app = express();
 
+
 // add middlewares
 app.use(express.static(path.join(__dirname, "..", "build")));
 app.use(express.static("public"));

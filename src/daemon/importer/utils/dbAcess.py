@@ -7,8 +7,7 @@ cursor = None
 try:
      connection= psycopg2.connect(user="is",
                                   password="is",
-                                  host="localhost",
-                                  port="10001",
+                                  host="db-xml",
                                   database="is")
 
      file =etree.parse('../data/output.xml')

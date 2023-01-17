@@ -1,5 +1,6 @@
-
 import Competitions from "../Tables/Competitions";
+import Teams from "../Tables/Teams";
+import Games from "../Tables/Games";
 
 const Sections = [
 
@@ -12,13 +13,13 @@ const Sections = [
     {
         id: "teams",
         label: "Teams",
-        content: <h1>Teams</h1>
+        content: <Teams/>
     },
 
     {
         id: "games",
         label: "Games",
-        content: <h1>Games</h1>
+        content: <Games/>
     }
 
 ];
