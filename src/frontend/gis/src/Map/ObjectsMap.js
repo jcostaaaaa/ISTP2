@@ -5,9 +5,9 @@ import ObjectMarkersGroup from "./ObjectMarkersGroup";
 function ObjectsMap() {
     return (
         <MapContainer style={{width: "100%", height: "100vh"}}
-                      center={[41.69462, -8.84679]}
-                      zoom={17}
-                      scrollWheelZoom={false}
+                      center={[39.66221,-8.13529]}
+                      zoom={5}
+                      scrollWheelZoom={true}
         >
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

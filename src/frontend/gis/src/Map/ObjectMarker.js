@@ -1,21 +1,19 @@
 import {Avatar, List, ListItem, ListItemIcon, ListItemText} from "@mui/material";
 import FlagIcon from '@mui/icons-material/Flag';
-import PictureInPictureAltIcon from '@mui/icons-material/PictureInPictureAlt';
-import ContactsIcon from '@mui/icons-material/Contacts';
+import SportsSoccerIcon from '@mui/icons-material/SportsSoccer';
 import React from "react";
 import {Marker, Popup} from 'react-leaflet';
 import {icon as leafletIcon, point} from "leaflet";
 
 const LIST_PROPERTIES = [
-    {"key": "country", label: "Country", Icon: FlagIcon},
-    {"key": "number", label: "Shirt Number", Icon: ContactsIcon},
-    {"key": "position", label: "Position", Icon: PictureInPictureAltIcon}
+    {"key": "competition", label: "Competition", Icon: FlagIcon},
+    {"key": "hometeam", label: "Team", Icon: SportsSoccerIcon},
 ];
 
-export function ObjectMarker({geoJSON}) {
-    const properties = geoJSON?.properties
+export function ObjectMarker({games}) {
+    const properties = games?.properties
     const {id, imgUrl, name} = properties;
-    const coordinates = geoJSON?.geometry?.coordinates;
+    const coordinates = games?.geometry?.coordinates;
 
     return (
         <Marker
@@ -33,6 +31,13 @@ export function ObjectMarker({geoJSON}) {
                             <Avatar alt={name} src={imgUrl}/>
                         </ListItemIcon>
                         <ListItemText primary={name}/>
+                    </ListItem>
+                    <ListItem>
+                        <ListItemText
+                            primary={<span>
+                            Coordinates: {coordinates[1]}, {coordinates[0]}
+                        </span>}
+                        />
                     </ListItem>
                     {
                         LIST_PROPERTIES

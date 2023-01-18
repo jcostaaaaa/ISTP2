@@ -16,7 +16,6 @@ if __name__ == "__main__":
         result = cursor.fetchall()
 
     for id, country in result:
-        print(id)
         coords = get_data_api(country)
         if coords is not None:
             with connection.cursor() as cursor:
